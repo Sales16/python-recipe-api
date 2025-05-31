@@ -4,6 +4,10 @@ on:
     branches:
       - main
 
+env:
+  AZURE_WEBAPP_NAME: my-app 
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -12,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
@@ -21,6 +25,52 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Run pylint
         working-directory: app
         run: pylint main.py
+
+      - name: Zip app
+        working-directory: app
+        run: zip -r ../python.zip .
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
+            python.zip
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: lint
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+
+      - name: Descompactar zip
+        run: unzip python.zip
+
+      - name: Login Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy para Azure Web App
+        uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
+        with:
+          app-name: 'python-app'
+          package: .
+
+      - name: logout
+        run: az logout
