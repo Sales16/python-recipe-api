@@ -95,3 +95,4 @@ def deletar_receita(receita_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Erro no banco: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro inesperado: {e}")
+    

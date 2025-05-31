@@ -30,3 +30,4 @@ class ReceitaIngrediente(Base):
 
     receita = relationship("Receita", back_populates="ingredientes")
     ingrediente = relationship("Ingrediente")
+    
