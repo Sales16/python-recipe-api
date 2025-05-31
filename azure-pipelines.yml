@@ -6,4 +6,19 @@ jobs:
   steps:
     - checkout: self
       fetchDepth: 0
+  
+  steps: 
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.12'
+      inputs:
+        versionSpec: '3.12'
+        addToPath: true
+        
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: 'Install dependencies'
 
+    - script: |
+      pylint main.py
+      displayName: 'Run pylint'
