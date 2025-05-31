@@ -69,7 +69,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'python-app'
+          app-name: 'python-api'
           package: .
 
       - name: logout
