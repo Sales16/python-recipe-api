@@ -11,4 +11,3 @@ app = FastAPI()
 
 app.include_router(ingredientes_router)
 app.include_router(receitas_router)
- 
