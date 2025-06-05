@@ -1,7 +1,4 @@
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -27,47 +24,3 @@ jobs:
       - name: Run pylint
         working-directory: app
         run: pylint main.py
-
-      - name: Zip app
-        working-directory: app
-        run: zip -r ../python.zip .
-
-      - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-app
-          path: |
-            python.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: lint
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: python-app
-
-      - name: Descompactar zip
-        run: unzip python.zip
-
-      - name: Login Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy para Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'python-api'
-          package: .
-
-      - name: logout
-        run: az logout
-        
