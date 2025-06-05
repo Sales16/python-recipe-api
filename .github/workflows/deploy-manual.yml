@@ -8,6 +8,9 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,6 +45,6 @@ jobs:
         with:
           app-name: 'python-api'
           package: python.zip        
-            
+
       - name: Logout Azure
         run: az logout 
