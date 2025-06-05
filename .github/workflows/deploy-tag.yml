@@ -4,7 +4,7 @@ on:
       - 'v*'
 
 jobs:
-  deploy:
+  deploy-tag:
     permissions:
       id-token: write
       contents: read
