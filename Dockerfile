@@ -1,11 +1,16 @@
-FROM python:3.12-alpine
+FROM python:3.12-slim
 
 WORKDIR /app
 
 COPY app/ /app
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    gcc \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 EXPOSE 8000
 

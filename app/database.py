@@ -3,16 +3,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 import time
-import logging
+
+from loki_config import logger
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 Base = declarative_base()
 engine = None
 SessionLocal = None
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 def init_db():
     global engine, SessionLocal

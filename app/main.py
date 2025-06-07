@@ -5,11 +5,14 @@ from database import Base, engine
 from crud.ingredientes import router as ingredientes_router
 from crud.receitas import router as receitas_router
 from status.health import router as health_router
+from prometheus_fastapi_instrumentator import Instrumentator
 
 if engine is not None:
     Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 app.include_router(ingredientes_router)
 app.include_router(receitas_router)
