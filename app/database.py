@@ -5,8 +5,7 @@ import os
 import time
 import logging
 
-# DATABASE_URL = os.getenv("DATABASE_URL")
-DATABASE_URL = "postgresql://meuusuario:minhasenha@localhost:5433/meubanco"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = None
 SessionLocal = None
