@@ -7,16 +7,20 @@ import logging
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+Base = declarative_base()
 engine = None
 SessionLocal = None
-Base = declarative_base()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-if not DATABASE_URL:
-    logger.warning("DATABASE_URL não encontrado. Aguardando configuração do banco de dados...")
-else:
+def init_db():
+    global engine, SessionLocal
+
+    if not DATABASE_URL:
+        logger.warning("DATABASE_URL não configurado.")
+        return
+
     connected = False
     while not connected:
         try:
@@ -31,9 +35,18 @@ else:
             logger.info("Tentando novamente em 20 segundos...")
             time.sleep(20)
 
+init_db()
+
 def get_db():
+    global SessionLocal, engine
+
+    if SessionLocal is None:
+        logger.warning("Tentando reconectar ao banco de dados em tempo de execução.")
+        init_db()
+
     if SessionLocal is None:
         raise Exception("Banco de dados não conectado")
+
     db = SessionLocal()
     try:
         yield db
